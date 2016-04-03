@@ -6,7 +6,7 @@ import UIKit
 typealias SelectionAction = () -> (Void)
 typealias WillDisplayCellAction = () -> (Void)
 
-@objc protocol TableViewCellIRowManageable: NSObjectProtocol {
+@objc public protocol TableViewCellRowManageable: NSObjectProtocol {
     
     var cellClass: AnyClass { get }
     var cellHeight: CGFloat { get }

@@ -3,7 +3,7 @@
 
 import UIKit
 
-protocol TableViewHeaderFooterManageable {
+public protocol TableViewHeaderFooterManageable {
     
     var viewClass: AnyClass { get }
     var viewHeight: CGFloat { get }

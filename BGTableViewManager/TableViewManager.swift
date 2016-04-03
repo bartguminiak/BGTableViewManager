@@ -3,14 +3,14 @@
 
 import UIKit
 
-class TableViewManager: NSObject {
+public class TableViewManager: NSObject, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
     
     private(set) var sections = [TableViewSection]()
     weak var delegate: TableViewManagerDelegate?
     
     let tableView: UITableView
     
-    init(tableView: UITableView) {
+    public init(tableView: UITableView) {
         self.tableView = tableView
         super.init()
         
@@ -19,7 +19,7 @@ class TableViewManager: NSObject {
     
     // MARK: Adding
     
-    func addSection(section: TableViewSection, animation: UITableViewRowAnimation) {
+    public func addSection(section: TableViewSection, animation: UITableViewRowAnimation) {
         registerSection(section)
         
         tableView.beginUpdates()
@@ -31,14 +31,14 @@ class TableViewManager: NSObject {
         tableView.endUpdates()
     }
     
-    func addSection(section: TableViewSection) {
+    public func addSection(section: TableViewSection) {
         registerSection(section)
         
         sections.append(section)
         tableView.reloadData()
     }
     
-    func addSections(sections newSections: [TableViewSection], animation: UITableViewRowAnimation) {
+    public func addSections(sections newSections: [TableViewSection], animation: UITableViewRowAnimation) {
         registerSections(newSections)
         
         tableView.beginUpdates()
@@ -50,7 +50,7 @@ class TableViewManager: NSObject {
         tableView.endUpdates()
     }
     
-    func addSections(sections newSections: [TableViewSection]) {
+    public func addSections(sections newSections: [TableViewSection]) {
         registerSections(newSections)
         
         sections.appendContentsOf(newSections)
@@ -59,7 +59,7 @@ class TableViewManager: NSObject {
     
     // MARK: Removing
     
-    func removeSection(section: TableViewSection, animation: UITableViewRowAnimation) {
+    public func removeSection(section: TableViewSection, animation: UITableViewRowAnimation) {
         if let idx = sections.indexOf( { $0 === section } ) {
             tableView.beginUpdates()
             tableView.deleteSections(
@@ -71,7 +71,7 @@ class TableViewManager: NSObject {
         }
     }
     
-    func removeSection(section: TableViewSection) {
+    public func removeSection(section: TableViewSection) {
         if let idx = sections.indexOf( { $0 === section } ) {
             sections.removeAtIndex(idx)
             tableView.reloadData()
@@ -80,7 +80,7 @@ class TableViewManager: NSObject {
     
     // MARK: Updating
     
-    func updateSection(section: TableViewSection, withSection newSection: TableViewSection, animation: UITableViewRowAnimation) {
+    public func updateSection(section: TableViewSection, withSection newSection: TableViewSection, animation: UITableViewRowAnimation) {
         if let idx = sections.indexOf( { $0 === section } ) {
             tableView.beginUpdates()
             tableView.deleteSections(
@@ -96,7 +96,7 @@ class TableViewManager: NSObject {
         }
     }
     
-    func updateSections(sections newSections: [TableViewSection], animation: UITableViewRowAnimation) {
+    public func updateSections(sections newSections: [TableViewSection], animation: UITableViewRowAnimation) {
         registerSections(newSections)
         
         tableView.beginUpdates()
@@ -113,7 +113,7 @@ class TableViewManager: NSObject {
         tableView.endUpdates()
     }
     
-    func updateSections(sections newSections: [TableViewSection]) {
+    public func updateSections(sections newSections: [TableViewSection]) {
         registerSections(newSections)
         
         sections.removeAll()
@@ -123,14 +123,14 @@ class TableViewManager: NSObject {
     
     // MARK: Clearing
     
-    func clearAllSections() {
+    public func clearAllSections() {
         sections.removeAll()
         tableView.reloadData()
     }
     
     // MARK: Single row operations
     
-    func replaceCellRow(cellRow: TableViewCellIRowManageable, withNewCellRow newCellRow: TableViewCellIRowManageable) {
+    public func replaceCellRow(cellRow: TableViewCellRowManageable, withNewCellRow newCellRow: TableViewCellRowManageable) {
         for section in sections {
             if let cellRowIdx = section.cellRows.indexOf( {$0 === cellRow } ) {
                 section.cellRows[cellRowIdx] = newCellRow
@@ -140,7 +140,7 @@ class TableViewManager: NSObject {
         }
     }
     
-    func removeCellRow(cellRow: TableViewCellIRowManageable, animation: UITableViewRowAnimation) {
+    public func removeCellRow(cellRow: TableViewCellRowManageable, animation: UITableViewRowAnimation) {
         for section in sections {
             if let cellRowIdx = section.cellRows.indexOf( {$0 === cellRow } ), sectionIdx = sections.indexOf({ $0 === section }) {
                 tableView.beginUpdates()
@@ -150,8 +150,8 @@ class TableViewManager: NSObject {
             }
         }
     }
-    
-    func removeCellRow(cellRow: TableViewCellIRowManageable) {
+
+    public func removeCellRow(cellRow: TableViewCellRowManageable) {
         for section in sections {
             if let cellRowIdx = section.cellRows.indexOf( {$0 === cellRow } ) {
                 section.cellRows.removeAtIndex(cellRowIdx)
@@ -162,12 +162,12 @@ class TableViewManager: NSObject {
     
     // MARK: Reloading
     
-    func reloadSection(section: TableViewSection) {
+    public func reloadSection(section: TableViewSection) {
         let indexSet = NSIndexSet(index: sections.indexOf( { $0 === section } )!)
         tableView.reloadSections(indexSet, withRowAnimation: .None)
     }
     
-    func reloadCellRow(cellRow: TableViewCellIRowManageable) {
+    public func reloadCellRow(cellRow: TableViewCellRowManageable) {
         for section in sections {
             if let cellRowIdx = section.cellRows.indexOf( {$0 === cellRow } ), sectionIdx = sections.indexOf({ $0 === section }) {
                 tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: cellRowIdx, inSection: sectionIdx)], withRowAnimation: .None)
@@ -175,7 +175,7 @@ class TableViewManager: NSObject {
         }
     }
     
-    // MARK:
+    // MARK: Delegates
     
     private func attachDelegates() {
         self.tableView.delegate = self
@@ -184,13 +184,13 @@ class TableViewManager: NSObject {
     
 }
 
-extension TableViewManager {
+public extension TableViewManager {
     
     private func registerHeaderFooter(headerFooter: TableViewHeaderFooterManageable) {
         tableView.registerClass(headerFooter.viewClass, forHeaderFooterViewReuseIdentifier: rowIdFromClass(headerFooter.viewClass))
     }
     
-    private func registerCellRow(row: TableViewCellIRowManageable) {
+    private func registerCellRow(row: TableViewCellRowManageable) {
         tableView.registerClass(row.cellClass, forCellReuseIdentifier: rowIdFromClass(row.cellClass))
     }
     
@@ -199,7 +199,7 @@ extension TableViewManager {
             registerHeaderFooter(header)
         }
         let cellRows = section.cellRows
-        _ = cellRows.map( { [weak self] (cellRow: TableViewCellIRowManageable) -> () in
+        _ = cellRows.map( { [weak self] (cellRow: TableViewCellRowManageable) -> () in
             self?.registerCellRow(cellRow) }
         )
         
@@ -217,9 +217,8 @@ extension TableViewManager {
     private func rowIdFromClass(className: AnyClass) -> String {
         return "\(className)Id"
     }
-}
-
-extension TableViewManager: UITableViewDataSource {
+    
+    // MARK: UITableViewDataSource
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return sections.count
@@ -235,9 +234,8 @@ extension TableViewManager: UITableViewDataSource {
         cellRow.configureCell(cell)
         return cell
     }
-}
-
-extension TableViewManager: UITableViewDelegate {
+    
+    // MARK: UITableViewDelegate
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = sections[section].header!
@@ -269,15 +267,13 @@ extension TableViewManager: UITableViewDelegate {
         let cellRow = sections[indexPath.section].cellRows[indexPath.row]
         cellRow.cellSelected?()
     }
-
+    
     func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         let cellRow = sections[indexPath.section].cellRows[indexPath.row]
         cellRow.willDisplayCell?()
     }
-
-}
-
-extension TableViewManager: UIScrollViewDelegate {
+    
+    // MARK:UIScrollViewDelegate
     
     func scrollViewWillEndDragging(scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         delegate?.scrollViewWillEndDragging?(scrollView, withVelocity: velocity, targetContentOffset: targetContentOffset)
@@ -286,4 +282,5 @@ extension TableViewManager: UIScrollViewDelegate {
     func scrollViewDidScroll(scrollView: UIScrollView) {
         delegate?.scrollViewDidScroll?(scrollView)
     }
+
 }

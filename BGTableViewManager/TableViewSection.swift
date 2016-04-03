@@ -3,27 +3,27 @@
 
 import UIKit
 
-class TableViewSection {
+public class TableViewSection {
     
     var header: TableViewHeaderFooterManageable?
-    var cellRows: [TableViewCellIRowManageable]
+    var cellRows: [TableViewCellRowManageable]
     var footer: TableViewHeaderFooterManageable?
     
-    init(header: TableViewHeaderFooterManageable?, cellRows: [TableViewCellIRowManageable], footer: TableViewHeaderFooterManageable?) {
+    public init(header: TableViewHeaderFooterManageable?, cellRows: [TableViewCellRowManageable], footer: TableViewHeaderFooterManageable?) {
         self.header = header
         self.cellRows = cellRows
         self.footer = footer
     }
     
-    convenience init() {
+    public convenience init() {
         self.init(header: nil, cellRows: [], footer: nil)
     }
     
-    convenience init(cellRows: [TableViewCellIRowManageable]) {
+    public convenience init(cellRows: [TableViewCellRowManageable]) {
         self.init(header: nil, cellRows: cellRows, footer: nil)
     }
 
-    convenience init(header: TableViewHeaderFooterManageable, cellRows: [TableViewCellIRowManageable]) {
+    public convenience init(header: TableViewHeaderFooterManageable, cellRows: [TableViewCellRowManageable]) {
         self.init(header: header, cellRows: cellRows, footer: nil)
     }
 }
