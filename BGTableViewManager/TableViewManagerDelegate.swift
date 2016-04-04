@@ -3,8 +3,9 @@
 
 import UIKit
 
-@objc protocol TableViewManagerDelegate {
+@objc public protocol TableViewManagerDelegate {
     
     optional func scrollViewWillEndDragging(scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>)
     optional func scrollViewDidScroll(scrollView: UIScrollView)
+    
 }

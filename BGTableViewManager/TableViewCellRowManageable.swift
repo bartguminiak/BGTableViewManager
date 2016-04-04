@@ -15,4 +15,5 @@ typealias WillDisplayCellAction = () -> (Void)
     
     optional func cellSelected()
     optional func willDisplayCell()
+    
 }

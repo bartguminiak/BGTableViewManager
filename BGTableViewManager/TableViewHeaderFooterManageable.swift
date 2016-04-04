@@ -9,4 +9,5 @@ public protocol TableViewHeaderFooterManageable {
     var viewHeight: CGFloat { get }
     var viewEstimatedHeight: CGFloat { get }
     func configureView(view: AnyObject)
+    
 }

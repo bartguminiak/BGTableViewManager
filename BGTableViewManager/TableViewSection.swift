@@ -5,9 +5,9 @@ import UIKit
 
 public class TableViewSection {
     
-    var header: TableViewHeaderFooterManageable?
-    var cellRows: [TableViewCellRowManageable]
-    var footer: TableViewHeaderFooterManageable?
+    public var header: TableViewHeaderFooterManageable?
+    public var cellRows: [TableViewCellRowManageable]
+    public var footer: TableViewHeaderFooterManageable?
     
     public init(header: TableViewHeaderFooterManageable?, cellRows: [TableViewCellRowManageable], footer: TableViewHeaderFooterManageable?) {
         self.header = header
@@ -26,4 +26,5 @@ public class TableViewSection {
     public convenience init(header: TableViewHeaderFooterManageable, cellRows: [TableViewCellRowManageable]) {
         self.init(header: header, cellRows: cellRows, footer: nil)
     }
+    
 }

@@ -5,10 +5,10 @@ import UIKit
 
 public class TableViewManager: NSObject, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
     
-    private(set) var sections = [TableViewSection]()
-    weak var delegate: TableViewManagerDelegate?
+    public private(set) var sections = [TableViewSection]()
+    public weak var delegate: TableViewManagerDelegate?
     
-    let tableView: UITableView
+    public let tableView: UITableView
     
     public init(tableView: UITableView) {
         self.tableView = tableView
