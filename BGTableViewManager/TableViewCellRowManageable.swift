@@ -3,8 +3,8 @@
 
 import UIKit
 
-typealias SelectionAction = () -> (Void)
-typealias WillDisplayCellAction = () -> (Void)
+public typealias SelectionAction = () -> (Void)
+public typealias WillDisplayCellAction = () -> (Void)
 
 @objc public protocol TableViewCellRowManageable: NSObjectProtocol {
     
