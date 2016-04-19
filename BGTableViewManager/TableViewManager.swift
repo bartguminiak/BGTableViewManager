@@ -220,11 +220,11 @@ public extension TableViewManager {
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sections[section].cellRows.count ?? 0
+        return sections[safe: section]?.cellRows.count ?? 0
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cellRow = sections[indexPath.section].cellRows[indexPath.row]
+        guard let cellRow = sections[safe: indexPath.section]?.cellRows[safe: indexPath.row] else { fatalError("wrong index path for cell") }
         let cell = tableView.dequeueReusableCellWithIdentifier(rowIdFromClass(cellRow.cellClass), forIndexPath: indexPath)
         cellRow.configureCell(cell)
         return cell
@@ -233,39 +233,39 @@ public extension TableViewManager {
     // MARK: UITableViewDelegate
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let header = sections[section].header!
+        guard let header = sections[safe: section]?.header else { fatalError("wrong section number for header") }
         let view = tableView.dequeueReusableHeaderFooterViewWithIdentifier(rowIdFromClass(header.viewClass))!
         header.configureView(view)
         return view
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        let cellRow = sections[indexPath.section].cellRows[indexPath.row]
-        return cellRow.cellHeight
+        let cellRow = sections[safe: indexPath.section]?.cellRows[indexPath.row]
+        return cellRow?.cellHeight ?? 0
     }
     
     func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        let cellRow = sections[indexPath.section].cellRows[indexPath.row]
+        guard let cellRow = sections[safe: indexPath.section]?.cellRows[indexPath.row] else { fatalError("wrong index path for cell") }
         return cellRow.cellEstimatedHeight
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        let header = sections[section].header!
+        guard let header = sections[safe: section]?.header else { fatalError("wrong section number for header") }
         return header.viewHeight
     }
     
     func tableView(tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        return sections[section].header?.viewEstimatedHeight ?? 0
+        return sections[safe: section]?.header?.viewEstimatedHeight ?? 0
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let cellRow = sections[indexPath.section].cellRows[indexPath.row]
-        cellRow.cellSelected?()
+        let cellRow = sections[safe: indexPath.section]?.cellRows[indexPath.row]
+        cellRow?.cellSelected?()
     }
     
     func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        let cellRow = sections[indexPath.section].cellRows[indexPath.row]
-        cellRow.willDisplayCell?()
+        let cellRow = sections[safe: indexPath.section]?.cellRows[indexPath.row]
+        cellRow?.willDisplayCell?()
     }
     
     // MARK:UIScrollViewDelegate
@@ -277,5 +277,11 @@ public extension TableViewManager {
     func scrollViewDidScroll(scrollView: UIScrollView) {
         delegate?.scrollViewDidScroll?(scrollView)
     }
-    
+}
+
+extension Array {
+    subscript (safe index: Int) -> Element? {
+        let isWithinBounds = index >= 0 && index < count
+        return isWithinBounds ? self[index] : nil
+    }
 }
